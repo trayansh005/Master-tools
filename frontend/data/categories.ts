@@ -1,0 +1,17 @@
+export const CATEGORIES = [
+	"Abrading & Polishing",
+	"Building & Grounds",
+	"Electrical & Lighting",
+	"Fabricating",
+	"Fastening & Joining",
+	"Filtering",
+	"Flow & Level Control",
+	"Furniture & Storage",
+	"Hand Tools",
+	"Hardware",
+	"Heating & Cooling",
+	"Lubricating",
+	"Material Handling",
+	"Measuring & Inspecting",
+	"Office Supplies & Signs",
+];

@@ -1,41 +1,24 @@
-import fs from "fs";
-import path from "path";
+// controllers/categories.controller.js
+import Category from "../models/Category.js";
 
-const DATA_PATH = path.resolve("./backend/data/categories.json");
-
-function readCategories() {
-	try {
-		const raw = fs.readFileSync(DATA_PATH, "utf-8");
-		return JSON.parse(raw);
-	} catch (err) {
-		return [];
-	}
+async function list(req, res) {
+  const categories = await Category.find().sort({ name: 1 });
+  res.json(categories);
 }
 
-function writeCategories(categories) {
-	try {
-		fs.mkdirSync(path.dirname(DATA_PATH), { recursive: true });
-		fs.writeFileSync(DATA_PATH, JSON.stringify(categories, null, 2), "utf-8");
-	} catch (err) {
-		console.error("Failed to write categories", err);
-	}
+async function create(req, res) {
+  const category = await Category.create(req.body);
+  res.status(201).json(category);
 }
 
-const controller = {
-	list(req, res) {
-		const categories = readCategories();
-		res.json(categories);
-	},
-	create(req, res) {
-		const name = (req.body?.name || "").toString().trim();
-		if (!name) return res.status(400).json({ error: "name required" });
-		const categories = readCategories();
-		if (!categories.includes(name)) {
-			categories.unshift(name);
-			writeCategories(categories);
-		}
-		res.status(201).json(categories);
-	},
-};
+async function update(req, res) {
+  const category = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(category);
+}
 
-export default controller;
+async function remove(req, res) {
+  await Category.findByIdAndDelete(req.params.id);
+  res.json({ success: true });
+}
+
+export default { list, create, update, remove };

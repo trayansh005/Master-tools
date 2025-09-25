@@ -24,6 +24,19 @@
 	--accent-green: var(--brand-green);
 	--accent-lightyellow: var(--brand-lightyellow);
 	--accent-yellow: var(--brand-lightyellow);
+
+	/* Tailwind brand colors */
+	--color-brand-50: #eff6ff;
+	--color-brand-100: #dbeafe;
+	--color-brand-200: #bfdbfe;
+	--color-brand-300: #93c5fd;
+	--color-brand-400: #60a5fa;
+	--color-brand-500: var(--brand-vibrant);
+	--color-brand-600: #2563eb;
+	--color-brand-700: #1d4ed8;
+	--color-brand-800: #1e40af;
+	--color-brand-900: #1e3a8a;
+	--color-brand-950: #172554;
 }
 
 /* Theme tokens are provided via CSS variables in :root */
@@ -77,4 +90,3 @@ body {
 	text-decoration: underline;
 	cursor: pointer;
 }
-  

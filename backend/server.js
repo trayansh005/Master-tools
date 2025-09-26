@@ -21,13 +21,18 @@ const PORT = process.env.PORT || 3001;
 // Connect to MongoDB
 connectToDB();
 
+const cors = require("cors");
 // Middleware
-app.use(
-	cors({
-		origin: process.env.FRONTEND_URL || "http://localhost:3000",
-		credentials: true,
-	})
-);
+const allowedOrigins = [
+	"http://localhost:3000",
+	"http://31.97.75.157:3000", // add your server IP
+	"http://masterglobalsupplier.com/"    // add your domain if using DNS
+  ];
+  
+app.use(cors({
+origin: allowedOrigins,
+credentials: true, // if sending cookies or auth headers
+}));
 
 app.use(helmet());
 app.use(morgan("dev"));

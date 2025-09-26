@@ -12,6 +12,7 @@ import Category from "./models/Category.js";
 import paymentRoutes from "./routes/payment.route.js";
 import ordersRoute from "./routes/orders.route.js";
 import ordersRouteAdmin from "./routes/orders-admin.route.js";
+import users from "./routes/users.route.js";
 import path from "path";
 
 
@@ -53,6 +54,7 @@ app.use("/api/products/:productId/variants", variantRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/orders", ordersRoute);
 app.use("/api", ordersRouteAdmin);
+app.use("/api/userdetails/update", users);
 
 // Static
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));

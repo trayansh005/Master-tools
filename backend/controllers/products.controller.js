@@ -21,7 +21,7 @@ export default {
         return res.status(404).json({ error: "Category not found" });
       }
 
-      const imageUrl = req.file ? `/uploads/${req.file.filename}.jpg` : null;
+      const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
       console.log(imageUrl);
 

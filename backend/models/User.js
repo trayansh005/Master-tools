@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
 		type: Date,
 		default: Date.now,
 	},
+	country: String,
+  	state: String,
+  	city: String,
+  	postal_code: Number,
+  	tax_id: Number,
 });
 
 // Hash password before saving

@@ -64,7 +64,7 @@ export default function Home() {
             <>
               {user.name === "admin" ? (
                 <Link
-                  href="/admin/"
+                  href="/admintemp/"
                   className="text-sm"
                 >
                   Admin Dashboard

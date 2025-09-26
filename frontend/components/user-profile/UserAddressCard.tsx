@@ -1,18 +1,48 @@
 "use client";
 import React from "react";
-import { useModal } from "../../hookstemp/useModal";
+import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
+  const handleSave = async () => {
+    try {
+      const form = document.querySelector("form") as HTMLFormElement;
+      const formData = new FormData(form);
+      const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  
+      const payload = {
+        country: formData.get("country")?.toString() || "",
+        state: formData.get("state")?.toString() || "",
+        city: formData.get("city")?.toString() || "",
+        postal_code: formData.get("postal_code")?.toString() || "",
+        tax_id: formData.get("tax_id")?.toString() || "",
+      };
+
+      const res = await fetch(`${API_BASE}/api/userdetails/update`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        credentials: "include",
+      });
+  
+      if (!res.ok) throw new Error("Failed to update address");
+  
+      const updatedUser = await res.json();
+  
+      console.log("Address updated successfully:", updatedUser);
+      closeModal();
+    } catch (err) {
+      console.error("Error saving address:", err);
+      alert("Failed to update address. Please try again.");
+    }
   };
+  
+  const { user } = useAuth();
   return (
     <>
       <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -28,7 +58,7 @@ export default function UserAddressCard() {
                   Country
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  United States
+                {user?.country || "Country"}
                 </p>
               </div>
 
@@ -37,7 +67,7 @@ export default function UserAddressCard() {
                   City/State
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  Phoenix, Arizona, United States.
+                  {user?.city || "City"}, {user?.state || "State"}
                 </p>
               </div>
 
@@ -46,7 +76,7 @@ export default function UserAddressCard() {
                   Postal Code
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  ERT 2489
+                {user?.postal_code || "Postal Code"}
                 </p>
               </div>
 
@@ -55,7 +85,7 @@ export default function UserAddressCard() {
                   TAX ID
                 </p>
                 <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                  AS4568384
+                {user?.tax_id || "TAX ID"}
                 </p>
               </div>
             </div>
@@ -99,22 +129,27 @@ export default function UserAddressCard() {
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div>
                   <Label>Country</Label>
-                  <Input type="text" defaultValue="United States" />
+                  <Input type="text" defaultValue={user?.country || "Country"} />
                 </div>
 
                 <div>
-                  <Label>City/State</Label>
-                  <Input type="text" defaultValue="Arizona, United States." />
+                  <Label>State</Label>
+                  <Input type="text" defaultValue={user?.state || "State"} />
+                </div>
+
+                <div>
+                  <Label>State</Label>
+                  <Input type="text" defaultValue={user?.city || "City"} />
                 </div>
 
                 <div>
                   <Label>Postal Code</Label>
-                  <Input type="text" defaultValue="ERT 2489" />
+                  <Input type="text" defaultValue={user?.postal_code || "Postal Code"} />
                 </div>
 
                 <div>
                   <Label>TAX ID</Label>
-                  <Input type="text" defaultValue="AS4568384" />
+                  <Input type="text" defaultValue={user?.tax_id || "TAX ID"} />
                 </div>
               </div>
             </div>

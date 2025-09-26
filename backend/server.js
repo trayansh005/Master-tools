@@ -22,12 +22,23 @@ const PORT = process.env.PORT || 3001;
 connectToDB();
 
 // Middleware
-app.use(
-	cors({
-		origin: process.env.FRONTEND_URL || "http://localhost:3000",
-		credentials: true,
-	})
-);
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://31.97.75.157:3000",   // server IP
+  "https://masterglobalsupplier.com"  // production domain
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // allow curl, mobile apps
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error(`CORS policy: ${origin} is not allowed.`), false);
+    }
+  },
+  credentials: true
+}));
 
 app.use(helmet());
 app.use(morgan("dev"));
@@ -37,38 +48,34 @@ app.use(express.urlencoded({ extended: true }));
 
 // Session
 app.use(
-	session({
-		secret: process.env.SESSION_SECRET || "your-secret-key",
-		resave: false,
-		saveUninitialized: false,
-		store: MongoStore.create({ mongoUrl: process.env.MONGO_URI, touchAfter: 24 * 3600 }),
-		cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 },
-	})
+  session({
+    secret: process.env.SESSION_SECRET || "your-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI, touchAfter: 24 * 3600 }),
+    cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 },
+  })
 );
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/categories", categoriesRoutes);
-app.use("/api/products", productRoutes); // Note: productRoutes handles /api/products/:id internally
-// Nest under /api/products/:productId/variants
+app.use("/api/products", productRoutes);
 app.use("/api/products/:productId/variants", variantRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/orders", ordersRoute);
 app.use("/api", ordersRouteAdmin);
 
-// Static files with CORS headers
+// Static files with proper CORS headers
 app.use(
-	"/uploads",
-	(req, res, next) => {
-		res.setHeader(
-			"Access-Control-Allow-Origin",
-			process.env.FRONTEND_URL || "http://localhost:3000"
-		);
-		res.setHeader("Access-Control-Allow-Credentials", "true");
-		res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-		next();
-	},
-	express.static(path.join(process.cwd(), "uploads"))
+  "/uploads",
+  (req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL || "*");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  },
+  express.static(path.join(process.cwd(), "uploads"))
 );
 
 // Health check

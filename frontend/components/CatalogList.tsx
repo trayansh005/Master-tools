@@ -1,6 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+
+interface Product {
+	_id: string;
+	name: string;
+	imageUrl?: string;
+	category?: { name: string };
+}
 
 interface CatalogListProps {
 	categoryId?: string; // comes from page.tsx activeSlug
@@ -8,34 +15,23 @@ interface CatalogListProps {
 }
 
 export default function CatalogList({ categoryId, searchQuery }: CatalogListProps) {
-	const [products, setProducts] = useState<any[]>([]);
-	const [loading, setLoading] = useState(true);
-
 	const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 
-	console.log(API_BASE);
+	// Use React Query to fetch products (will use prefetched data if available)
+	const { data: products = [], isLoading } = useQuery<Product[]>({
+		queryKey: ["products", categoryId, searchQuery],
+		queryFn: async () => {
+			let url = `${API_BASE}/api/products?`;
+			if (categoryId) url += `category=${categoryId}&`;
+			if (searchQuery) url += `search=${encodeURIComponent(searchQuery)}`;
 
-	useEffect(() => {
-		const fetchProducts = async () => {
-			setLoading(true);
-			try {
-				let url = `${API_BASE}/api/products?`;
-				if (categoryId) url += `category=${categoryId}&`;
-				if (searchQuery) url += `search=${encodeURIComponent(searchQuery)}`;
+			const res = await fetch(url);
+			if (!res.ok) throw new Error("Failed to fetch products");
+			return res.json();
+		},
+	});
 
-				const res = await fetch(url);
-				const data = await res.json();
-				setProducts(data);
-			} catch (err) {
-				console.error("Error fetching products:", err);
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchProducts();
-	}, [categoryId, searchQuery]);
-
-	if (loading) return <div>Loading...</div>;
+	if (isLoading) return <div>Loading...</div>;
 	if (!products.length) return <div className="text-gray-500 text-sm">No products found</div>;
 
 	return (

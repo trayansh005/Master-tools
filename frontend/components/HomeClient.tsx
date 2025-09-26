@@ -6,12 +6,11 @@ import CatalogList from "../components/CatalogList";
 import { useAuth } from "../contexts/AuthContext";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 export default function HomeClient() {
 	const { user, logout } = useAuth();
-	const [loading, setLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState(""); // new state
 	const searchParams = useSearchParams();
 	const activeSlug = searchParams.get("category"); // currently selected categoryId
@@ -21,20 +20,13 @@ export default function HomeClient() {
 		{ _id: string; name: string }[]
 	>({
 		queryKey: ["categories"],
-		// no queryFn: rely on server-prefetched & hydrated cache
 	});
-
-	useEffect(() => {
-		setLoading(isCategoriesLoading);
-	}, [isCategoriesLoading]);
-
-	// ...removed local fetch effect; react-query provides categories
 
 	const handleLogout = async () => {
 		await logout();
 	};
 
-	if (loading) return <div>Loading...</div>;
+	if (isCategoriesLoading) return <div>Loading...</div>;
 
 	return (
 		<div className="min-h-screen font-sans bg-[var(--background)] text-[var(--foreground)]">

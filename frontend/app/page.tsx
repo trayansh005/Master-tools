@@ -4,12 +4,17 @@ import { QueryClient } from "@tanstack/react-query";
 import { dehydrate } from "@tanstack/react-query";
 import { Suspense } from "react";
 import { fetchCategoriesServer } from "../apiServices/categories.server";
+import { fetchProductsServer } from "../apiServices/products.server";
 
-// Server component: prefetch categories and pass dehydrated state to client
+// Server component: prefetch categories and products and pass dehydrated state to client
 export default async function Page() {
 	const queryClient = new QueryClient();
 
 	await queryClient.prefetchQuery({ queryKey: ["categories"], queryFn: fetchCategoriesServer });
+	await queryClient.prefetchQuery({ 
+		queryKey: ["products", undefined, undefined], 
+		queryFn: () => fetchProductsServer() 
+	});
 
 	const dehydrated = dehydrate(queryClient);
 

@@ -29,10 +29,14 @@ export default function CatalogList({ categoryId, searchQuery }: CatalogListProp
 			if (!res.ok) throw new Error("Failed to fetch products");
 			return res.json();
 		},
+		staleTime: 1000 * 60 * 5, // 5 minutes
+		// For initial load without filters, assume data is prefetched
+		enabled: !!(categoryId || searchQuery || true), // Always enabled but with different behavior
 	});
 
-	if (isLoading) return <div>Loading...</div>;
-	if (!products.length) return <div className="text-gray-500 text-sm">No products found</div>;
+	// Don't show loading for initial load since data should be prefetched
+	if (isLoading && (categoryId || searchQuery)) return <div>Loading...</div>;
+	if (!products.length && !isLoading) return <div className="text-gray-500 text-sm">No products found</div>;
 
 	return (
 		<div>

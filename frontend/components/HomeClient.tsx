@@ -26,7 +26,8 @@ export default function HomeClient() {
 		await logout();
 	};
 
-	if (isCategoriesLoading) return <div>Loading...</div>;
+	// Categories should be available immediately since they're prefetched
+	// if (isCategoriesLoading) return <div>Loading...</div>;
 
 	return (
 		<div className="min-h-screen font-sans bg-[var(--background)] text-[var(--foreground)]">

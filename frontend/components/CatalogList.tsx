@@ -54,7 +54,7 @@ export default function CatalogList({ categoryId, searchQuery }: CatalogListProp
 									src={
 										product.imageUrl.startsWith("http")
 											? product.imageUrl
-											: `${API_BASE}${product.imageUrl}`
+											: `${API_BASE}/api/${product.imageUrl}`
 									}
 									alt={product.name}
 									className="w-100 h-20 object-cover rounded-lg shadow-sm"

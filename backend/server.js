@@ -68,7 +68,7 @@ app.use("/api", ordersRouteAdmin);
 
 // Static files with proper CORS headers
 app.use(
-  "/uploads",
+  "/api/uploads",
   (req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL || "*");
     res.setHeader("Access-Control-Allow-Credentials", "true");

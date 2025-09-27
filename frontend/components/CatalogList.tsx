@@ -36,7 +36,8 @@ export default function CatalogList({ categoryId, searchQuery }: CatalogListProp
 
 	// Don't show loading for initial load since data should be prefetched
 	if (isLoading && (categoryId || searchQuery)) return <div>Loading...</div>;
-	if (!products.length && !isLoading) return <div className="text-gray-500 text-sm">No products found</div>;
+	if (!products.length && !isLoading)
+		return <div className="text-gray-500 text-sm">No products found</div>;
 
 	return (
 		<div>

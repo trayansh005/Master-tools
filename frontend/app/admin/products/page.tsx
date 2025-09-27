@@ -319,7 +319,7 @@ export default function ProductsPage() {
 											<div className="flex items-center gap-3">
 												{product.imageUrl && (
 													<img
-														src={`${API_BASE}${product.imageUrl}`}
+														src={`${API_BASE}/api/${product.imageUrl}`}
 														alt={product.name}
 														className="w-12 h-12 object-cover rounded-lg"
 													/>
@@ -704,7 +704,7 @@ export default function ProductsPage() {
 									) : editingProduct?.imageUrl ? (
 										<div className="space-y-4">
 											<img
-												src={`${API_BASE}${editingProduct.imageUrl}`}
+												src={`${API_BASE}/api/${editingProduct.imageUrl}`}
 												alt="Current"
 												className="mx-auto max-w-xs max-h-48 object-cover rounded"
 											/>
